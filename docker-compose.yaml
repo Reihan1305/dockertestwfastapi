@@ -1,0 +1,27 @@
+version: '3.8'  # Versi Docker Compose yang digunakan
+
+services:
+  web:
+    build: 
+      context: .  # Mengacu pada Dockerfile yang ada di direktori saat ini
+      dockerfile: Dockerfile  # Nama Dockerfile jika tidak menggunakan nama default
+    ports:
+      - "8000:8000"  # Memetakan port 80 di dalam container ke port 8000 di host
+    environment:
+      - DATABASE_URL=postgresql://postgres:reihan1305@db:5432/dockertest  # URL koneksi ke database
+    depends_on:
+      - db  # Menentukan bahwa layanan web bergantung pada layanan db
+
+  db:
+    image: postgres:15-alpine  # Menggunakan image PostgreSQL versi 15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/  # Menyimpan data database secara persisten
+    ports:
+      - "5433:5432"  # Memetakan port 5432 di dalam container ke port 5433 di host
+    environment:
+      - POSTGRES_USER=postgres  # Nama pengguna untuk database
+      - POSTGRES_PASSWORD=reihan1305  # Kata sandi untuk pengguna
+      - POSTGRES_DB=dockertest  # Nama database yang akan dibuat
+
+volumes:
+  postgres_data:  # Definisi volume untuk menyimpan data PostgreSQL
